@@ -1,3 +1,7 @@
 _site/
 push.sh
 .DS_Store
+# PV monitor generated files
+pv_monitor/__pycache__/
+pv_monitor/data/*.db
+pv_monitor/logs/*.log
