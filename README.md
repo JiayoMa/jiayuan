@@ -65,3 +65,31 @@ AcadHomepage
 - AcadHomepage incorporates Font Awesome, which is distributed under the terms of the SIL OFL 1.1 and MIT License.
 - AcadHomepage is influenced by the github repo [mmistakes/minimal-mistakes](https://github.com/mmistakes/minimal-mistakes), which is distributed under the MIT License.
 - AcadHomepage is influenced by the github repo [academicpages/academicpages.github.io](https://github.com/academicpages/academicpages.github.io), which is distributed under the MIT License.
+## 光伏组串离线异常检测工具
+
+仓库新增了`pv_monitor`目录，提供一个可本地部署的光伏组串检测小程序：
+
+- **主要特性**：
+  - 离线规则模型（当前阈值默认0.5A）自动标记低电流模块，颜色高亮告警。
+  - 支持载入CSV或内置示例数据，表格布局与现场大屏一致（串号+PV编号双行显示电压/电流）。
+  - 每次检测结果写入SQLite数据库并记录到日志文件，便于追溯。
+  - 提供GUI与命令行两种模式，方便在无网络环境中运行。
+
+- **快速体验**：
+  1. 安装依赖：`pip install tkinter`（Linux桌面环境通常自带）以及`pip install pyinstaller`用于打包（可选）。
+  2. 运行GUI：`python -m pv_monitor.app`，或直接双击经PyInstaller打包后的`pv_monitor.exe`。
+  3. 命令行检测：`python -m pv_monitor.app --headless --csv pv_monitor/sample_data/sample_snapshot.csv`。
+
+- **打包为单文件可执行程序（Windows）**：
+  ```bash
+  pyinstaller --noconfirm --onefile --windowed pv_monitor/app.py \
+    --name pv_monitor \
+    --add-data "pv_monitor/sample_data/sample_snapshot.csv;pv_monitor/sample_data" \
+    --add-data "pv_monitor/logs;pv_monitor/logs" \
+    --add-data "pv_monitor/data;pv_monitor/data"
+  ```
+  生成的`dist/pv_monitor.exe`可离线运行，界面与代码保持一致。
+
+- **数据格式**：CSV需包含表头`string,module,voltage,current`。每条数据对应一块光伏板，串编号从1开始，PV编号对应列名。
+
+运行后的日志输出位于`pv_monitor/logs/pv_monitor.log`，数据库位于`pv_monitor/data/pv_monitor.db`。
